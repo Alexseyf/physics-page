@@ -1,34 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Physics Page
 
-## Getting Started
+Um Blog de Física Full Stack abrangente construído com **Next.js**, **Express**, **Prisma**, e **Clean Architecture**.
 
-First, run the development server:
+## 🚀 Tech Stack
+
+-   **Frontend**: Next.js 16 (App Router), TailwindCSS, React 19
+-   **Backend**: Node.js + Express Custom Server
+-   **Banco de Dados**: PostgreSQL com Prisma ORM
+-   **Validação**: Zod
+-   **Renderização Matemática**: KaTeX (via `react-katex` & `rehype-katex`)
+-   **Linguagem**: TypeScript
+
+## 📂 Estrutura do Projeto
+
+O projeto segue uma abordagem modular de Clean Architecture dentro de `src/`.
+
+```
+src/
+├── app/                  # Next.js App Router (Camada de Visualização)
+├── server/               # Lógica de Backend Express
+│   ├── controllers/      # Controladores de Rota
+│   ├── routers/          # Roteadores Express
+│   ├── services/         # Regras de Negócio
+│   └── middleware/       # Middlewares Express
+├── components/           # Componentes React
+│   ├── domain/           # Específicos do Domínio (MathRenderer, etc)
+│   ├── ui/               # UI Genérica
+│   └── layout/           # Componentes de Layout
+├── schemas/              # Schemas Zod (Compartilhados)
+├── lib/                  # Integrações Externas
+└── types/                # Definições TypeScript
+```
+
+`server.ts` na raiz atua como o ponto de entrada, orquestrando tanto a API Express quanto o frontend Next.js.
+
+## 🛠️ Começando
+
+### Pré-requisitos
+
+-   Node.js (LTS recomendado)
+-   npm
+
+### Instalação
+
+```bash
+npm install
+```
+
+### Configuração do Banco de Dados
+
+Inicialize seu banco de dados Prisma:
+
+```bash
+npx prisma init
+# Configure o .env com sua DATABASE_URL
+npx prisma db push
+```
+
+### Desenvolvimento
+
+Roda o servidor customizado usando `ts-node`:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> **Nota**: O servidor roda em `http://localhost:3000`. Rotas de API devem ser definidas em `src/server` e montadas no `server.ts`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Produção
 
-## Learn More
+Compila tanto o app Next.js quanto o servidor, e então inicia o processo Node de produção:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+npm start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📐 Recursos Matemáticos
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+O blog suporta renderização LaTeX para fórmulas físicas.
 
-## Deploy on Vercel
+-   **Componente**: `<MathRenderer formula="..." block />`
+-   **Markdown**: Suporta sintaxe LaTeX padrão `$E=mc^2$` via `react-markdown`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ⚠️ Importante
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Como usamos um **Custom Server**, este projeto é otimizado para deploy em **Container/VPS** (Docker, Google Cloud Run), e não para Vercel Serverless Functions padrão.
