@@ -1,32 +1,36 @@
-# Physics Page
+# A Física é Muito Louca (Physics Page)
 
-Um Blog de Física Full Stack abrangente construído com **Next.js**, **Prisma**, e **Clean Architecture**. Otimizado para **Vercel** e **Serverless**.
+Um Blog de Física Full Stack abrangente e robusto, construído com **Next.js 16**, **Prisma (com Adapter Supabase)**, e **Clean Architecture**.
+
+Otimizado para **Vercel** com arquitetura **Serverless** e **Edge Runtime Compatibility**.
 
 ## 🚀 Tech Stack
 
 -   **Frontend**: Next.js 16 (App Router), TailwindCSS, React 19
--   **Backend**: Next.js API Routes (Serverless Functions)
--   **Banco de Dados**: PostgreSQL com Prisma ORM
+-   **Backend**: Next.js Server Actions & API Routes
+-   **Banco de Dados**: PostgreSQL (Supabase) configurado com `@prisma/adapter-pg`
+-   **Autenticação**: NextAuth.js v5 (Auth.js) - *Edge & Server Compatible*
+-   **ORM**: Prisma 7
 -   **Validação**: Zod
--   **Renderização Matemática**: KaTeX (via `react-katex` & `rehype-katex`)
--   **Linguagem**: TypeScript
+-   **Renderização Matemática**: KaTeX (via `react-katex` & `rehype-katex`) e `react-markdown`
 
 ## 📂 Estrutura do Projeto
 
-O projeto segue uma abordagem modular de Clean Architecture dentro de `src/`.
+O projeto utiliza **Route Groups** para separar contextos públicos e privados:
 
 ```
 src/
-├── app/                  # Next.js App Router & API Routes
-│   ├── api/              # Backend (Serverless Functions)
-│   └── ...               # Pages & Layouts
-├── components/           # Componentes React
-│   ├── domain/           # Específicos do Domínio (MathRenderer, etc)
-│   ├── ui/               # UI Genérica
-│   └── layout/           # Componentes de Layout
-├── schemas/              # Schemas Zod (Compartilhados)
-├── lib/                  # Integrações Externas (Prisma Client)
-└── types/                # Definições TypeScript
+├── app/
+│   ├── (public)/           # Área Pública (Home, Posts)
+│   ├── (admin)/            # Área Administrativa
+│   │   ├── login/          # Login Seguro
+│   │   └── (protected)/    # Rotas Protegidas (Dashboard, Editor)
+│   └── api/                # Auth Endpoints
+├── components/
+│   ├── admin/              # Editor Markdown/LaTeX
+│   └── ...
+├── lib/                    # Configurações Singletom (Prisma, Auth)
+└── middleware.ts           # Proteção de Rotas (Edge Runtime)
 ```
 
 ## 🛠️ Começando
@@ -34,46 +38,59 @@ src/
 ### Pré-requisitos
 
 -   Node.js (LTS recomendado)
--   npm
+-   Conta no Supabase (ou outro Postgres)
 
-### Instalação
+### Configuração de Ambiente
+
+Crie um arquivo `.env` na raiz:
 
 ```bash
-npm install
+# Connection String do Postgres (Supabase - Transaction Mode recomendado se disponível, ou Session)
+DATABASE_URL="postgresql://user:pass@host:5432/db"
+
+# Segredo para assinatura de tokens (gere um seguro)
+AUTH_SECRET="seu-segredo-aqui"
 ```
 
-### Configuração do Banco de Dados
-
-Inicialize seu banco de dados Prisma:
+### Instalação e Banco de Dados
 
 ```bash
-npx prisma init
-# Configure o .env com sua DATABASE_URL
+# Instalar dependências
+npm install
+
+# Sincronizar Schema com o Banco
 npx prisma db push
+```
+
+### Criando um Admin
+
+Utilize o Prisma Studio para criar seu primeiro usuário (lembre-se de que a senha deve ser hasheada se estiver usando bcrypt manualmente no seed, ou ajuste conforme a lógica de auth):
+
+```bash
+npx prisma studio
 ```
 
 ### Desenvolvimento
 
-Roda o servidor de desenvolvimento padrão do Next.js:
+Rode o servidor de desenvolvimento:
 
 ```bash
 npm run dev
 ```
 
-> **Nota**: O servidor roda em `http://localhost:3000`. Rotas de API ficam em `src/app/api`.
+Acesse:
+-   **Blog**: `http://localhost:3000`
+-   **Admin**: `http://localhost:3000/admin/login`
 
-### Produção
+## 📐 Recursos do Editor
 
-Compila o app Next.js para produção (compatível com Vercel):
+O painel administrativo conta com um editor poderoso:
+-   **Markdown GFM**: Cabeçalhos, listas, links.
+-   **LaTeX Inline**: Use `$E = mc^2$` para fórmulas na linha.
+-   **LaTeX Block**: Use `$$` para blocos matemáticos.
+-   **Preview em Tempo Real**: Veja como o post ficará antes de publicar.
 
-```bash
-npm run build
-npm start
-```
+## 📦 Deploy
 
-## 📐 Recursos Matemáticos
-
-O blog suporta renderização LaTeX para fórmulas físicas.
-
--   **Componente**: `<MathRenderer formula="..." block />`
--   **Markdown**: Suporta sintaxe LaTeX padrão `$E=mc^2$` via `react-markdown`.
+Totalmente configurado para deploy na **Vercel**.
+Certifique-se de configurar as variáveis de ambiente (`DATABASE_URL`, `AUTH_SECRET`) no painel da Vercel.
