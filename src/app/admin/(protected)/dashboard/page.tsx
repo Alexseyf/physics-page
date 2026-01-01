@@ -1,12 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 
-// Mock prisma for now if lib/prisma doesn't exist yet, but wait, I haven't created lib/prisma.
-// I should use "import { PrismaClient } from '@prisma/client'; const prisma = new PrismaClient();" 
-// OR create lib/prisma singleton first.
-// I'll create lib/prisma in the next step or right now.
-// For this file content, I'll assume lib/prisma exists.
-
 export default async function DashboardPage() {
   const posts = await prisma.post.findMany({
     orderBy: { createdAt: 'desc' },

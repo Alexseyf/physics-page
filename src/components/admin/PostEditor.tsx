@@ -7,12 +7,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
-// Fix for rehype-katex type issue if needed, but usually works with proper config. 
-// If generic types fail, we might need a specific rendering approach. 
-// For now, using standard react-markdown setup.
-
 interface PostEditorProps {
-  post?: Post | null; // null means new
+  post?: Post | null;
 }
 
 export default function PostEditor({ post }: PostEditorProps) {
@@ -20,8 +16,7 @@ export default function PostEditor({ post }: PostEditorProps) {
   const [title, setTitle] = useState(post?.title || '');
   const [slug, setSlug] = useState(post?.slug || '');
   const [published, setPublished] = useState(post?.published || false);
-  
-  // Basic auto-slug generation
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setTitle(val);
